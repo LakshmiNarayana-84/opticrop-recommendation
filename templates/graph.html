@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Comparison Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Inter, 'Segoe UI', system-ui, sans-serif;
+            background: #f2f6fb;
+            color: #102a43;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 28px;
+        }
+
+        .container {
+            width: min(980px, 100%);
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 32px;
+            box-shadow: 0 32px 90px rgba(15, 23, 42, 0.12);
+            border: 1px solid rgba(15, 23, 42, 0.05);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            align-items: flex-start;
+            margin-bottom: 28px;
+        }
+
+        .header h1 {
+            font-size: clamp(1.8rem, 2.25vw, 2.8rem);
+            line-height: 1.05;
+            color: #102a43;
+        }
+
+        .header p {
+            font-size: 0.98rem;
+            color: #475569;
+            max-width: 520px;
+            line-height: 1.75;
+        }
+
+        .chart-frame {
+            min-height: 440px;
+            border-radius: 24px;
+            background: #f8fafc;
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            padding: 24px;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .summary {
+            display: grid;
+            gap: 10px;
+            margin-top: 18px;
+            padding: 20px 22px;
+            border-radius: 20px;
+            background: #ffffff;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            color: #334155;
+            font-size: 0.96rem;
+            line-height: 1.7;
+        }
+
+        .summary strong {
+            font-size: 1rem;
+            color: #102a43;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 18px;
+            margin-top: 22px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #334155;
+            font-size: 0.96rem;
+        }
+
+        .legend-chip {
+            width: 18px;
+            height: 18px;
+            border-radius: 8px;
+            box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08);
+        }
+
+        .legend-chip.recommended {
+            background: #2563eb;
+        }
+
+        .legend-chip.other {
+            background: #60a5fa;
+        }
+
+        .close-btn {
+            border: none;
+            background: #2563eb;
+            color: #ffffff;
+            border-radius: 16px;
+            padding: 12px 18px;
+            font-weight: 700;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .close-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 24px rgba(37, 99, 235, 0.18);
+        }
+
+        @media (max-width: 700px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .close-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>Crop Suitability Comparison</h1>
+                <p>Review the model’s crop suitability scores and verify the top recommendation for your soil and climate inputs.</p>
+            </div>
+            <button class="close-btn" onclick="window.close()">Close</button>
+        </div>
+
+        <div class="chart-frame">
+            <canvas id="comparisonChart"></canvas>
+        </div>
+
+        <div class="summary">
+            <strong>How to read this chart</strong>
+            <span>Each bar shows a crop’s suitability score in percentage terms. The highlighted bar marks the best match from the model.</span>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <span class="legend-chip recommended"></span>
+                Recommended crop
+            </div>
+            <div class="legend-item">
+                <span class="legend-chip other"></span>
+                Other crops
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let chart = null;
+
+        function renderChart(crops, scores, recommendedCrop) {
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+
+            if (chart) {
+                chart.destroy();
+            }
+
+            const colors = crops.map((crop) => crop === recommendedCrop ? '#2563eb' : '#60a5fa');
+
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: crops,
+                    datasets: [{
+                        label: 'Suitability (%)',
+                        data: scores,
+                        backgroundColor: colors,
+                        borderRadius: 16,
+                        maxBarThickness: 48,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.92)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            padding: 12,
+                            borderRadius: 12,
+                            callbacks: {
+                                label: (context) => `${context.dataset.label}: ${context.formattedValue}%`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: '#334155',
+                                font: { size: 13, weight: '600' }
+                            },
+                            grid: { display: false, drawBorder: false }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                color: '#64748b',
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                color: 'rgba(148, 163, 184, 0.2)',
+                                drawBorder: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        const data = JSON.parse(localStorage.getItem('chartData') || '{}');
+        if (data.crops && data.scores && data.recommendedCrop) {
+            renderChart(data.crops, data.scores, data.recommendedCrop);
+        }
+    </script>
+</body>
+</html>

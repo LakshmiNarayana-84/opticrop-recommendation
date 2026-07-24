@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OptiCrop Recommendation Engine</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-shell">
+        <header class="hero-panel">
+            <div class="hero-copy">
+                <p class="eyebrow">Agri Intelligence</p>
+                <h1>OptiCrop Recommendation Engine</h1>
+                <p class="hero-text">Get a data-driven crop recommendation based on soil nutrients, climate inputs, and rainfall patterns.</p>
+            </div>
+            <div class="hero-summary">
+                <div class="summary-card">
+                    <span>Validated model</span>
+                    <strong>Soil & climate-aware</strong>
+                </div>
+                <div class="summary-card">
+                    <span>Fast output</span>
+                    <strong>Instant crop guidance</strong>
+                </div>
+            </div>
+        </header>
+
+        <main class="grid-layout">
+            <section class="panel panel-form">
+                <div class="panel-header">
+                    <div>
+                        <p class="panel-label">Input data</p>
+                        <h2>Field parameters</h2>
+                    </div>
+                    <button id="openGuideButton" class="link-button">Measurement guide</button>
+                </div>
+
+                <div id="weatherStatus" class="alert info">Detecting your location for weather insights...</div>
+
+                <div class="action-row">
+                    <button type="button" id="detectWeatherButton" class="secondary-button">Load current weather</button>
+                </div>
+
+                <form id="predictionForm" class="form-grid">
+                    <div class="form-group">
+                        <label for="N">Nitrogen (N)</label>
+                        <input type="number" step="any" id="N" required placeholder="0 - 250 mg/kg">
+                    </div>
+                    <div class="form-group">
+                        <label for="P">Phosphorus (P)</label>
+                        <input type="number" step="any" id="P" required placeholder="0 - 250 mg/kg">
+                    </div>
+                    <div class="form-group">
+                        <label for="K">Potassium (K)</label>
+                        <input type="number" step="any" id="K" required placeholder="0 - 300 mg/kg">
+                    </div>
+                    <div class="form-group">
+                        <label for="temperature">Temperature</label>
+                        <input type="number" step="any" id="temperature" required placeholder="-10 to 60 °C">
+                    </div>
+                    <div class="form-group">
+                        <label for="humidity">Humidity</label>
+                        <input type="number" step="any" id="humidity" required placeholder="0 - 100 %">
+                    </div>
+                    <div class="form-group">
+                        <label for="ph">Soil pH</label>
+                        <input type="number" step="any" id="ph" required placeholder="0.0 - 14.0">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="rainfall">Rainfall</label>
+                        <input type="number" step="any" id="rainfall" required placeholder="0 - 1000 mm">
+                    </div>
+                    <div class="form-group full-width">
+                        <button type="submit" class="primary-button">Identify best crop</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="panel panel-result">
+                <div class="panel-header">
+                    <div>
+                        <p class="panel-label">Recommendation</p>
+                        <h2>Outcome</h2>
+                    </div>
+                </div>
+
+                <div id="result" class="result-card">
+                    <p class="result-title">Enter your data and submit to see the recommended crop.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="guideModal" class="modal-overlay" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
+            <button class="modal-close" id="closeGuide" aria-label="Close guide">×</button>
+            <h2 id="guideTitle">How to measure soil and climate inputs</h2>
+            <div class="guide-content">
+                <section class="guide-section">
+                    <h3>Nitrogen (N)</h3>
+                    <p>Use a reliable soil test kit or laboratory analysis. Combine multiple soil cores for a representative sample.</p>
+                    <ul>
+                        <li>Units: mg/kg</li>
+                        <li>Ideal workflow: collect, dry, mix, and test.</li>
+                    </ul>
+                </section>
+                <section class="guide-section">
+                    <h3>Phosphorus (P)</h3>
+                    <p>Measure with an Olsen or Bray extraction kit for accuracy. Home kits are acceptable for estimation.</p>
+                    <ul>
+                        <li>Units: mg/kg</li>
+                        <li>Best practice: sample multiple locations across the field.</li>
+                    </ul>
+                </section>
+                <section class="guide-section">
+                    <h3>Potassium (K)</h3>
+                    <p>Use a laboratory or field kit to estimate potassium levels. Ensure a representative soil sample is used.</p>
+                    <ul>
+                        <li>Units: mg/kg</li>
+                        <li>Sampling: combine several cores from the field.</li>
+                    </ul>
+                </section>
+                <section class="guide-section">
+                    <h3>Humidity</h3>
+                    <p>Use a hygrometer for air humidity or a soil moisture probe for soil conditions.</p>
+                    <ul>
+                        <li>Units: % relative humidity</li>
+                        <li>Use current hourly data for best results.</li>
+                    </ul>
+                </section>
+                <section class="guide-section">
+                    <h3>Soil pH</h3>
+                    <p>Measure soil pH with a digital meter or calibrated strip for the most dependable readings.</p>
+                    <ul>
+                        <li>Scale: 0–14</li>
+                        <li>Recommended soil range: 5.5–7.5 for most crops.</li>
+                    </ul>
+                </section>
+                <section class="guide-section">
+                    <h3>Rainfall</h3>
+                    <p>Record rainfall in millimeters using a rain gauge or local weather station.</p>
+                    <ul>
+                        <li>Units: mm</li>
+                        <li>Use recent precipitation totals for accurate recommendations.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
